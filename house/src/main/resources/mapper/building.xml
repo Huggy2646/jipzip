@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jipzip.building.mapper.BuildingMapper">
+
+	<select id="search" parameterType="searchCondition"
+		resultType="building">
+		select a.aptCode, apartmentName, lng, lat, area, dealAmount, floor, dong, stat
+		from housedeal as a
+		inner join (
+				select *
+				from houseInfo b
+				<where>				
+					<if test='dong != null'>
+						b.dongcode=#{dong}					
+					</if>
+				</where>
+		) as c
+		on a.aptCode = c.aptCode
+		<where>
+			<choose>
+		      <when test="year != 0 and month == 0">
+		        dealYear=#{year}
+		      </when>
+		      <when test="year == 0 and month != 0">
+		        dealMonth=#{month}
+		      </when>
+		      <when test="year != 0 and month != 0">
+		      	dealYear=#{year} and dealMonth=#{month}
+		      </when>
+		      <otherwise></otherwise>
+		    </choose>
+		</where>
+		<if test="sorter != null and order != null">
+			order by
+			<if test='sorter == "dealAmount"'>
+				convert(replace(${sorter}, ',', ''), UNSIGNED INTEGER)
+			</if>
+			<if test='sorter == "floor"'>
+				convert(${sorter}, UNSIGNED INTEGER)
+			</if>
+			${order}
+		</if>
+	</select>
+	
+	
+	<select id="aptCode" parameterType="detailCondition">
+		select apartCode
+		from apartment_information
+		where dongCode=#{dongCode} and apartmentName like CONCAT('%', #{apartmentName}, '%')
+	</select>
+
+</mapper>

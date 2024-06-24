@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jipzip.board.mapper.BoardMapper">
+
+	<!-- QnA 게시판 게시글 관련 -->
+	<select id="getQnaPosts" resultType="post">
+		SELECT postId, userId, title, createdAt, hit, state
+		FROM qna_posts
+		order by createdAt desc;
+	</select>
+	
+	<select id="getQnaPost" parameterType="int" resultType="post">
+		SELECT postId, userId, title, content, createdAt, lastModifiedAt, hit, state
+		FROM qna_posts
+		WHERE postId=#{id}
+	</select>
+	
+	<insert id="postQnaPost" parameterType="post">
+		INSERT INTO qna_posts (userId, title, content)
+		VALUES (#{userId}, #{title}, #{content})
+	</insert>
+	
+	<update id="putQnaPost" parameterType="post">
+		UPDATE qna_posts
+		SET title = #{title}, content = #{content}
+		WHERE postId=#{postId}
+	</update>
+	
+	<delete id="deleteQnaPost" parameterType="int">
+		DELETE FROM qna_posts
+		WHERE postId=#{id}
+	</delete>
+	
+	<update id="changeQnaPostState" parameterType="map">
+		UPDATE qna_posts
+		SET state=#{state}
+		WHERE postId=#{id}
+	</update>
+	
+	<update id="upQnaPostHit" parameterType="int">
+		UPDATE qna_posts
+		SET hit = hit + 1
+		WHERE postId=#{id}
+	</update>
+	
+	<!-- 댓글 관련 -->
+	<select id="getComments" parameterType="int" resultType="comment">
+		SELECT commentId, postId, lastModifiedAt, commentContent, commenter, createdAt, heart
+		FROM comments
+		WHERE postId = #{id}
+		order by commentId desc
+	</select>
+	
+	<select id="getComment" parameterType="int" resultType="comment">
+		SELECT commentId, postId, lastModifiedAt, commentContent, commenter, createdAt, heart
+		FROM comments
+		WHERE commentId = #{id}
+	</select>
+	
+	<select id="getLatestComment" parameterType="int" resultType="comment">
+		SELECT commentId, postId, lastModifiedAt, commentContent, commenter, createdAt, heart
+		FROM comments
+		WHERE postId = #{id}
+		order by commentId desc
+        limit 1
+	</select>
+	
+	<insert id="postComment" parameterType="comment">
+		INSERT INTO comments (postId, commentContent, commenter)
+		VALUES (#{postId}, #{commentContent}, #{commenter})
+	</insert>
+	
+	<update id="putComment" parameterType="comment">
+		UPDATE comments
+		SET commentContent=#{commentContent}
+		WHERE commentId=#{commentId}
+	</update>
+	
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM comments
+		WHERE commentId=#{id}
+	</delete>
+	
+	<delete id="deleteComments" parameterType="int">
+		DELETE FROM comments
+		WHERE postId=#{id}
+	</delete>
+	
+	<select id="getCommentCount" parameterType="int" resultType="int">
+		SELECT COUNT(commentId)
+		FROM comments
+		WHERE postId=#{id}
+	</select>
+	
+	<update id="changeCommentHeart" parameterType="map">
+		UPDATE comments
+		SET heart = #{heart}
+		WHERE commentId=#{id}
+	</update>
+	
+	<!-- 테스트 관련 -->
+	<!-- 모든 게시물 삭제 -->
+	<delete id="deletePostAll">
+		DELETE FROM posts
+	</delete>
+	
+	<!-- 게시물 갯수 반환 -->
+	<select id="getCount" resultType="int">
+		SELECT COUNT(postId)
+		FROM posts
+	</select>
+	
+	<!-- 모든 댓글 삭제 -->
+	<delete id="deleteCommentAll">
+		DELETE FROM comments
+	</delete>
+	
+	<!-- 모든 댓글 갯수 반환 -->
+	<select id="getCommentAllCount">
+		SELECT COUNT(commentId)
+		FROM comments
+	</select>
+	
+	<!-- 모든 댓글 가져오기 -->
+	<select id="getCommentAll" resultType="comment">
+		SELECT commentId, postId, lastModifiedAt, commentContent, commenter, createdAt
+		FROM comments
+	</select>
+</mapper>

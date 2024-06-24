@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jipzip.board.mapper.BoardMapper">
+
+	<!-- 공지사항 게시판 게시글 관련 -->
+	<select id="getNoticePosts" resultType="post">
+		SELECT postId, userId, title, createdAt, hit
+		FROM notice_posts
+		order by createdAt desc;
+	</select>
+	
+	<select id="getNoticePost" parameterType="int" resultType="post">
+		SELECT postId, userId, title, content, createdAt, lastModifiedAt, hit
+		FROM notice_posts
+		WHERE postId=#{id}
+	</select>
+	
+	<insert id="postNoticePost" parameterType="post">
+		INSERT INTO notice_posts (userId, title, content)
+		VALUES (#{userId}, #{title}, #{content})
+	</insert>
+	
+	<update id="putNoticePost" parameterType="post">
+		UPDATE notice_posts
+		SET title = #{title}, content = #{content}
+		WHERE postId=#{postId}
+	</update>
+	
+	<delete id="deleteNoticePost" parameterType="int">
+		DELETE FROM notice_posts
+		WHERE postId=#{id}
+	</delete>
+	
+	<update id="upNoticePostHit" parameterType="int">
+		UPDATE notice_posts
+		SET hit = hit + 1
+		WHERE postId=#{id}
+	</update>
+</mapper>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+<mapper namespace="com.jipzip.user.mapper.UserMapper">
+	
+	
+	<!-- 사용자 로그인 -->
+	<select id="login" parameterType ="map" resultType="userDto">
+		select *
+		from users
+		where id=#{userdto.id} and pw=#{pw}
+	</select>
+	
+	<!-- 유저기본정보 가져오기 -->
+	<select id="getUser" parameterType="string" resultType="userDto">
+		select id,pw
+		from users
+		where id=#{id}
+	</select>
+	
+	
+	<!-- 유저 해싱키 가져오기 -->
+	<select id="getKey" parameterType="string" resultType="string">
+		select pkey
+		from users
+		where id=#{userId}
+	</select>
+	
+	<!-- 유저추가정보 가져오기 -->
+	<select id="getUserInfo" parameterType="string" resultType="userInfoDto">
+		select *
+		from userinfo
+		where id=#{id}
+	</select>
+	
+	<!-- 회원가입(기본정보) -->	
+	<insert id="writeuser" parameterType="userDto">
+		insert into users
+		values(
+			#{id},#{pw},#{pkey}, now()
+		)
+		
+	</insert>
+	<!-- 회원가입(추가정보) -->
+ 	<insert id="writeuserinfo" parameterType="userInfoDto">
+			insert into userinfo
+			values(
+				#{id},#{role},#{name},#{adress},#{email},#{mobile_number}
+			)
+	</insert>
+	
+	<!-- 회원정보 수정-->
+	<update id="modifyUserInfo" parameterType="userInfoDto">
+		update userinfo
+		set
+			role=#{role},
+			name=#{name},
+			adress=#{adress},
+			email=#{email},
+			mobile_number=#{mobile_number}
+		where id=#{id}
+	</update>
+	
+	<!-- 회원 탈퇴 -->
+	<delete id="removeUser" parameterType="string">
+		delete from users
+		where id=#{userId}
+	</delete>
+	
+	<delete id="removeUserInfo" parameterType="string">
+		delete from userinfo
+		where id=#{userId}
+	</delete>
+	
+	<!-- 비밀번호 변경 -->
+	<update id="modifyPw" parameterType="UserDto">
+		update users
+		set 
+			pw=#{pw},
+			pkey=#{pkey}
+		where id=#{id}
+	</update>
+	
+</mapper>
+
