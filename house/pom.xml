@@ -11,6 +11,7 @@
 	</parent>
 	<groupId>com.jipzip</groupId>
 	<artifactId>house</artifactId>
+	 <packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>house</name>
 	<description>jipzip project for Spring Boot</description>
